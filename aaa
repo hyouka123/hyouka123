@@ -1,0 +1,5 @@
+repeat wait() until game:IsLoaded()
+local PlaceId = game.PlaceId
+loadstring(game:HttpGet"https://raw.githubusercontent.com/hyouka123/hyouka123/main/fsef")()
+elseif PlaceId == 537413528 then
+end
