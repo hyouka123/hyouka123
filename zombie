@@ -1,0 +1,67 @@
+spawn(function()
+local mt = getrawmetatable(game)
+local old = mt.__namecall
+setreadonly(mt,false)
+mt.__namecall = newcclosure(function(self, ...)
+local args = {...}
+if getnamecallmethod() == 'FireServer' and self.Name == 'ClientBulletHit' then
+args[1] = args[1].Parent.Head
+end
+return old(self, unpack(args))
+end)
+end)
+spawn(function()
+while true do
+wait()
+game:GetService("Players").LocalPlayer.Character.Remotes.Reload:FireServer()
+end
+end)
+loadstring(game:HttpGet('https://raw.githubusercontent.com/yeerma/such/main/README.md'))()
+-- Settings --
+
+local settings = {
+
+	fillcolor = Color3.fromRGB(255, 255, 255),
+	filltransparency = 0.75,
+
+	outlinecolor = Color3.fromRGB(255, 255, 255),
+	outlinetransparency = 0,
+}
+
+-- Script --
+
+local plr = game.Players.LocalPlayer
+local highlights = Instance.new("Folder", game:service("CoreGui"))
+
+local function addhighlight(object)
+	local highlight = Instance.new("Highlight", highlights)
+	highlight.Adornee = object
+
+	highlight.FillColor = settings.fillcolor
+	highlight.FillTransparency = settings.filltransparency
+
+	highlight.OutlineColor = settings.outlinecolor
+	highlight.OutlineTransparency = settings.outlinetransparency
+
+	highlight.Adornee.Changed:Connect(function()
+		if not highlight.Adornee or not highlight.Adornee.Parent then
+			highlight:Destroy()
+		end
+	end)
+
+	return highlight
+end
+
+local function addto(object)
+	if object:IsA("Model") then
+		addhighlight(object)
+	end
+end
+
+for _, v in pairs(workspace.Ignore.Zombies:GetDescendants()) do
+	addto(v)
+end
+
+workspace.Ignore.Zombies.DescendantAdded:Connect(function(v)
+	addto(v)
+end)
